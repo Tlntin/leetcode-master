@@ -1,3 +1,4 @@
+import json
 import os
 import re
 from tqdm import tqdm
@@ -186,10 +187,11 @@ def generate_book_latex(latex_path_list: list, toc_len = 2):
 
 def main():
     latex_file_list = []
+    latex2md_path = {}
     # read toc file
     print("start reading markdown file")
     toc_degree = 0
-    toc_length = 39
+    toc_page = 7  # the page of table of content
     with open(toc_path, "rt", encoding="utf-8") as f:
         file_index = 1
         for text in tqdm(f.readlines()):
@@ -208,13 +210,17 @@ def main():
                     continue
                 md_text = get_md_text(md_file_path, toc_degree)
                 save_markdown_latex(md_text, latex_file_path)
+                latex2md_path[latex_file_path] = md_file_path
                 latex_file_list.append(latex_file_path)
             elif text_type.startswith("#"):
                 toc_degree = text_type.count('#')
                 save_markdown_latex(text, latex_file_path)
                 latex_file_list.append(latex_file_path)
             file_index += 1
-    generate_book_latex(latex_file_list, 7)
+    generate_book_latex(latex_file_list, toc_page)
+    trans_path = os.path.join(build_dir, "latex2md.json")
+    with open(trans_path, "wt", encoding="utf-8") as f:
+        json.dump(latex2md_path, f, indent=4)
 
 
 if __name__ == '__main__':
