@@ -80,17 +80,18 @@ def strip_md_text(md_sent_list: list, toc_degree: int, md_file_path=None):
                 head_degree = word_list[0].count("#")
                 head_data_list.append([idx, head_degree])
     if len(head_data_list) > 0:
-        highest_degree = min([data[1] for data in head_data_list])
-        if highest_degree < toc_degree + 1:
-            need_add = toc_degree + 1 - highest_degree
-            need_add_str = '#' * need_add
-        else:
-            need_add_str = ""
+        # highest_degree = min([data[1] for data in head_data_list])
+        # if highest_degree < toc_degree + 1:
+        #     need_add = toc_degree + 1 - highest_degree
+        #     need_add_str = '#' * need_add
+        # else:
+        #     need_add_str = ""
+        need_add_str = "#" * (toc_degree + 1)
         # make other header to be item
         for index, head_data in enumerate(head_data_list):
             idx = head_data[0]
             if index == 0:
-                md_sent_list[idx] = need_add_str + md_sent_list[idx]
+                md_sent_list[idx] = need_add_str + md_sent_list[idx].lstrip("#")
             else:
                 md_sent_list[idx] = "- **" + md_sent_list[idx].lstrip("#").lstrip() + "**"
     else:

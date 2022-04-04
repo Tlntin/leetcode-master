@@ -12,6 +12,8 @@ def toc2level(toc_path: str, output_path: str):
     with open(toc_path, "rt", encoding="utf-8") as f:
         text_list = f.readlines()
         result_data = []
+        toc_data = ["目录", "Contents", 2]
+        result_data.append(toc_data)
         for text in text_list:
             if r"\numberline" in text:
                 text = text.split(r"\numberline")[-1].strip()
