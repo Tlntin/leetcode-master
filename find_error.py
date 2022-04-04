@@ -94,5 +94,6 @@ def find_failed_md():
 
 
 if __name__ == '__main__':
+    find_error()
     find_failed_md()
 
