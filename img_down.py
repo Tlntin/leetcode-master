@@ -27,11 +27,12 @@ else:
     with open(img_dict_path, "rt", encoding="utf-8") as f:
       img_dict = json.load(f)
 
+
 def img_down(img_url: str, img_path = None):
     headers={
       'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
     }
-    res = requests.get(img_url)
+    res = requests.get(img_url, headers=headers)
     old_img_path = img_dict.get(img_url, None)
     if old_img_path is not None:
         old_img_path2 = os.path.join("build", old_img_path)

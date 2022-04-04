@@ -136,11 +136,12 @@ def get_md_text(file_path: str, toc_degree: int):
         return md_text
 
 
-def save_markdown_latex(latex_content: str, output_path: str):
+def save_markdown_latex(latex_content: str, output_path: str, clear_page: bool = False):
     """
     save markdown content to file path
     :param latex_content:
     :param output_path:
+    :param clear_page: use \clearpage function to make new page
     :return:
     """
     with open(output_path, "wt", encoding="utf-8") as f:
@@ -150,6 +151,9 @@ def save_markdown_latex(latex_content: str, output_path: str):
         f.write("\n")
         f.write(r"\end{markdown}")
         f.write("\n")
+        if clear_page:
+            f.write(r"\clearpage")
+            f.write("\n")
 
 
 def generate_book_latex(latex_path_list: list, toc_len = 2):
@@ -177,7 +181,6 @@ def generate_book_latex(latex_path_list: list, toc_len = 2):
     for latex_file in latex_path_list:
         latex_text += r"    \input{" + latex_file.split(".")[0] + "}\n"
     latex_text += r"\end{document}"
-    latex_text += "\n"
     result_latex_file = os.path.join(build_dir, "book.tex")
     with open(result_latex_file, "wt", encoding="utf-8") as f:
         f.write(latex_text)
@@ -209,18 +212,18 @@ def main():
                     print(md_file_path, "not exists")
                     continue
                 md_text = get_md_text(md_file_path, toc_degree)
-                save_markdown_latex(md_text, latex_file_path)
+                save_markdown_latex(md_text, latex_file_path, True)
                 latex2md_path[latex_file_path] = md_file_path
                 latex_file_list.append(latex_file_path)
             elif text_type.startswith("#"):
                 toc_degree = text_type.count('#')
-                save_markdown_latex(text, latex_file_path)
+                save_markdown_latex(text, latex_file_path, False)
                 latex_file_list.append(latex_file_path)
             file_index += 1
     generate_book_latex(latex_file_list, toc_page)
     trans_path = os.path.join(build_dir, "latex2md.json")
     with open(trans_path, "wt", encoding="utf-8") as f:
-        json.dump(latex2md_path, f, indent=4)
+        json.dump(latex2md_path, f, indent=4, ensure_ascii=False)
 
 
 if __name__ == '__main__':

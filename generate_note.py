@@ -47,7 +47,7 @@ def toc2level(toc_path: str, output_path: str):
                 if note_text in ["周一", "周二"]:
                     continue
                 # strip problem No
-                note_text = note_text.split(".")[-1].strip()
+                note_text = note_text.strip().rstrip(".md").split(".")[-1].strip()
                 if len(level_text) > 0 and len(note_text) > 0:
                     result_data.append([level_text, note_text, page_num])
             else:
