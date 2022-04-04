@@ -2,3 +2,12 @@ book
 favicon.svg
 favicon.png
 .DS_Store
+build/
+.idea/
+__pychache__/
+.vscode
+*/__pycache__/
+__pycache__/
+./*/__pycache__/
+.idea
+

@@ -1,0 +1,26 @@
+\documentclass[UTF8, a4paper]{ctexbook}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{minted}
+% 支持自定义颜色
+\usepackage{xcolor}
+\definecolor{bg}{RGB}{240, 240, 240}
+% 设置代码格式(参考文档：https://bleedingfight.github.io/2018/01/08/minted/)
+\setminted{fontsize=\small, autogobble=true, breaklines, bgcolor=bg}
+\usepackage{markdown}
+% 支持代码格式, 并且打开数学公式设置, 保持图片宽度为0.8
+\markdownSetup{
+  fencedCode = true, hybrid = true,inlineFootnotes = true, html=true,
+  renderers = {
+    image = {\begin{figure}[htb]
+      \centering
+      \includegraphics[width = .8\linewidth]{#3}%
+      \ifx\empty#4\empty\else
+        \caption{#4}\label{fig:#1}%
+      \fi
+    \end{figure}},
+    link = {\href{#3}{#1}},
+  }
+}
+\title{代码随想录}
+\author{程序员Carl}
