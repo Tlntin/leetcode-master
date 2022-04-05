@@ -2,21 +2,24 @@ import json
 import os
 import re
 from tqdm import tqdm
-from img_down import img_down
+from utils.img_down import img_down
+from config import Config
 
-now_dir = os.path.dirname(os.path.abspath(__file__))
-build_dir = os.path.join(now_dir, "build")
-img_dir = os.path.join("build", "img")
 
-# table of content path
-toc_path = os.path.join(now_dir, "toc.md")
-src_dir = "problems"
-
-if not os.path.exists(toc_path):
-    print("you must add toc.md in here!")
-
-# latex dir
-latex_dir = os.path.join(build_dir, "latex")
+params = Config()
+# now_dir = os.path.dirname(os.path.abspath(__file__))
+# build_dir = os.path.join(now_dir, "../build")
+# img_dir = os.path.join("../build", "img")
+#
+# # table of content path
+# toc_path = os.path.join(now_dir, "../toc.md")
+# src_dir = "../problems"
+#
+# if not os.path.exists(toc_path):
+#     print("you must add toc.md in here!")
+#
+# # latex dir
+# latex_dir = os.path.join(build_dir, "latex")
 
 
 def get_md_path(sent: str):
@@ -128,7 +131,7 @@ def get_md_text(file_path: str, toc_degree: int):
                         else:
                             # there are som problem in gif with latex
                             # So we need change gif to url
-                            t_text = t_text.replace("![", "[")
+                            t_text = t_text.replace("![", "[gif - ")
                     else:
                         print(img_path, "download failed")
                         t_text = ""
@@ -157,13 +160,15 @@ def save_markdown_latex(latex_content: str, output_path: str, clear_page: bool =
             f.write("\n")
 
 
-def generate_book_latex(latex_path_list: list, toc_len = 2):
+def generate_book_latex(latex_path_list: list, toc_len=2):
     # generate latex
-    head_latex_file = os.path.join(now_dir, "head.tex")
+    head_latex_file = os.path.join(params.tex_dir, "head.tex")
     latex_text = ""
     with open(head_latex_file, "rt", encoding="utf-8") as f:
         latex_text += f.read()
         latex_text += "\n"
+        latex_text += r"\title{" + params.config_json["title"] + "}\n"
+        latex_text += r"\author{" + params.config_json["author"] + "}\n"
     latex_text += r"\begin{document}"
     latex_text += "\n"
     latex_text += r"\maketitle"
@@ -182,20 +187,21 @@ def generate_book_latex(latex_path_list: list, toc_len = 2):
     for latex_file in latex_path_list:
         latex_text += r"    \input{" + latex_file.split(".")[0] + "}\n"
     latex_text += r"\end{document}"
-    result_latex_file = os.path.join(build_dir, "book.tex")
+    result_latex_file = os.path.join(params.build_dir, "book.tex")
     with open(result_latex_file, "wt", encoding="utf-8") as f:
         f.write(latex_text)
     print("book.tex generated success, save in ", result_latex_file)
     print("now you can build pdf or epub with book.tex")
 
 
-def main():
+def generate_latex():
     latex_file_list = []
     latex2md_path = {}
     # read toc file
-    print("start reading markdown file")
+    print("start reading markdown file and download picture")
     toc_degree = 0
-    toc_page = 7  # the page of table of content
+    toc_page = params.config_json.get("toc_page", 2)  # the page of table of content, default
+    toc_path = os.path.join(params.now_dir, "toc.md")
     with open(toc_path, "rt", encoding="utf-8") as f:
         file_index = 1
         for text in tqdm(f.readlines()):
@@ -205,8 +211,8 @@ def main():
             text_type = text.split()[0]
             md_file_path = get_md_path(text)
             if md_file_path is not None:
-                md_file_path = os.path.join(src_dir, md_file_path.lstrip("./"))
-            latex_file_path = os.path.join(latex_dir, f"{file_index}.tex")
+                md_file_path = os.path.join(params.md_src_dir, md_file_path.lstrip("./"))
+            latex_file_path = os.path.join(params.latex_dir, f"{file_index}.tex")
 
             if md_file_path is not None:
                 if not os.path.exists(md_file_path):
@@ -222,7 +228,7 @@ def main():
                 latex_file_list.append(latex_file_path)
             file_index += 1
     generate_book_latex(latex_file_list, toc_page)
-    trans_path = os.path.join(build_dir, "latex2md.json")
+    trans_path = os.path.join(params.build_dir, "latex2md.json")
     with open(trans_path, "wt", encoding="utf-8") as f:
         json.dump(latex2md_path, f, indent=4, ensure_ascii=False)
 

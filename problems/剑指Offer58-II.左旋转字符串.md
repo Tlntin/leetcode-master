@@ -159,7 +159,7 @@ class Solution:
 
 ```
 
-```python 3
+```python
 #方法四：考虑不能用切片的情况下，利用模+下标实现
 class Solution:
     def reverseLeftWords(self, s: str, n: int) -> str:

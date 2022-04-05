@@ -13,6 +13,12 @@
 8. `toc.tex` 手动编译目录的latex文件
 
 ### 构建指南
+1. 配置好textlive, VScode环境。
+2. 运行main.py生成`build/book.tex`
+3. 在vscode里面直接通过latex编译`build/book.tex`, 需要编译两次，第一次获取目录，第二次生成大纲。
+4. 最终可以直接在`build`目录下看到`book.pdf文件`
+
+### 构建指南(旧)
 0. 配置好textlive, VScode环境。
 1. 运行`generate_latex.py`, 生成build/book.tex
 2. 运行`md_check.py`, 预编译每个markdown, 生成预编译日志.
@@ -24,47 +30,8 @@
 8. 将手动目录添加到newbook.pdf的方法，可以用pdf编辑软件安装，也可以把`insert_page.tex`, `build/newbook.pdf`丢到第7步的文件夹，然后编译`insert_page.tex`即可。(注意newbook.pdf的页码总数是否为1482，如果不是记得修改一下咯)
 9. 运行generate_note导入书签到目标pdf。
 
-### 其他说明
-1. 如何保证手动添加的目录与newbook.pdf页码对齐？
-  - 默认的目录是2页，如果手动生成的toc.pdf是7页，只需要提前插入5页空白页占位就可以了。
-  - 可以通过修改generate_latex.py中的main函数，修改215行来控制生成的空白目录页数量。（当前为7页）
+
 
 ### 已知问题
-1. 个别连续多张图片显示异常(基本修复)
-2. 目录不支持超链接（因为是手动插入的，不是latex自动生成的，不影响目录书签使用）
-3. 部分代码没有高亮，而是普通的黑白模式。(问题不大)
-4. 部分markdown没有编译成功导致文件缺失(有空再看看能否修复)，缺失列表如下：
-```text
-problems/知识星球精选/秋招总结1.md
-problems/知识星球精选/offer总决赛，何去何从.md
-problems/0704.二分查找.md
-problems/0027.移除元素.md
-problems/数组总结篇.md
-problems/0349.两个数组的交集.md
-problems/0454.四数相加II.md
-problems/哈希表总结.md
-problems/剑指Offer58-II.左旋转字符串.md
-problems/0027.移除元素.md
-problems/0239.滑动窗口最大值.md
-problems/0102.二叉树的层序遍历.md
-problems/0222.完全二叉树的节点个数.md
-problems/0617.合并二叉树.md
-problems/0701.二叉搜索树中的插入操作.md
-problems/0216.组合总和III.md
-problems/周总结/20201030回溯周末总结.md
-problems/0053.最大子序和.md
-problems/0045.跳跃游戏II.md
-problems/0406.根据身高重建队列.md
-problems/0056.合并区间.md
-problems/0509.斐波那契数.md
-problems/0416.分割等和子集.md
-problems/0322.零钱兑换.md
-problems/0139.单词拆分.md
-problems/0123.买卖股票的最佳时机III.md
-problems/0300.最长上升子序列.md
-problems/0674.最长连续递增序列.md
-problems/0392.判断子序列.md
-problems/0496.下一个更大元素I.md
-problems/1382.将二叉搜索树变平衡.md
-problems/0673.最长递增子序列的个数.md
-```
+1. 部分latex公式没有转码，因为可能会导致编译失败，所以干脆把latex与markdown混用功能关闭了。
+2. 少量代码没有带高亮显示。

@@ -3,8 +3,10 @@ import re
 import PyPDF2
 import pandas as pd
 from tqdm import trange
+from config import Config
 
-now_dir = os.path.dirname(os.path.abspath(__file__))
+
+params = Config()
 
 
 def toc2level(toc_path: str, output_path: str):
@@ -57,6 +59,20 @@ def toc2level(toc_path: str, output_path: str):
         result_df = pd.DataFrame(result_data, columns=["level", "note", "page"])
         result_df.to_csv(output_path, index=False, encoding="utf-8")
         print("toc level path generate success, output path is ", output_path)
+
+
+def get_num_pages(file_path):
+    """
+    获取文件总页码
+    :param file_path: 文件路径
+    :return:
+    """
+    reader = PyPDF2.PdfFileReader(file_path)
+    # 不解密可能会报错：PyPDF2.utils.PdfReadError: File has not been decrypted
+    if reader.isEncrypted:
+        reader.decrypt('')
+    page_num = reader.getNumPages()
+    return page_num
 
 
 class PdfDirGenerator:
@@ -120,9 +136,10 @@ class PdfDirGenerator:
 
 
 if __name__ == '__main__':
-    toc_path1 = os.path.join(now_dir, "build", "newbook.toc")
-    level_path1 = os.path.join(now_dir, "build", "toc_level.csv")
+
+    toc_path1 = os.path.join(params.build_dir, "newbook.toc")
+    level_path1 = os.path.join(params.build_dir, "toc_level.csv")
     toc2level(toc_path1, level_path1)
-    pdf_path1 = os.path.join(now_dir, "build", "temp", "insert_page.pdf")
+    pdf_path1 = os.path.join(params.temp_dir, "insert_page.pdf")
     pdf_generate = PdfDirGenerator(pdf_path=pdf_path1, csv_path=level_path1)
     pdf_generate.run()

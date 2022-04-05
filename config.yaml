@@ -1,0 +1,6 @@
+# the title of book
+title: "代码随想录"
+# the author of book
+author: "程序员Carl"
+# where is markdown file in? please input your dir path
+md_src_dir: "problems"
